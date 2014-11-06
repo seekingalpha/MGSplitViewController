@@ -220,22 +220,44 @@
 
 - (CGSize)splitViewSizeForOrientation:(UIInterfaceOrientation)theOrientation
 {
-	UIScreen *screen = [UIScreen mainScreen];
-	CGRect fullScreenRect = screen.bounds; // always implicitly in Portrait orientation.
-	
-	// Initially assume portrait orientation.
-	float width = fullScreenRect.size.width;
-	float height = fullScreenRect.size.height;
-	
-	// Correct for orientation.
-	if (UIInterfaceOrientationIsLandscape(theOrientation)) {
-		width = height;
-		height = fullScreenRect.size.width;
-	}
-	
-	return CGSizeMake(width, height);
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_7_1) {
+        UIWindow *window = [UIApplication sharedApplication].delegate.window;
+        
+        CGFloat boundsWidth = CGRectGetWidth(window.bounds);
+        CGFloat boundsHeight = CGRectGetHeight(window.bounds);
+        
+        if (![self isPortraitOrientation]) {
+            boundsWidth = CGRectGetWidth(window.bounds);
+            boundsHeight = CGRectGetHeight(window.bounds);
+        }
+        
+        return CGSizeMake(boundsWidth, boundsHeight);
+        
+    }
+    else {
+        
+        UIWindow *window = [UIApplication sharedApplication].delegate.window;
+        
+        CGFloat boundsWidth = CGRectGetWidth(window.bounds);
+        CGFloat boundsHeight = CGRectGetHeight(window.bounds);
+        
+        if (![self isPortraitOrientation]) {
+            boundsWidth = CGRectGetHeight(window.bounds);
+            boundsHeight = CGRectGetWidth(window.bounds);
+        }
+        
+        return CGSizeMake(boundsWidth, boundsHeight);
+        
+    }
+
 }
 
+- (BOOL)isPortraitOrientation
+{
+    BOOL isPortrait = UIInterfaceOrientationIsPortrait(self.interfaceOrientation);
+    
+    return isPortrait;
+}
 
 - (void)layoutSubviewsForInterfaceOrientation:(UIInterfaceOrientation)theOrientation withAnimation:(BOOL)animate
 {
