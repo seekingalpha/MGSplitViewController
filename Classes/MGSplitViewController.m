@@ -220,36 +220,28 @@
 
 - (CGSize)splitViewSizeForOrientation:(UIInterfaceOrientation)theOrientation
 {
-    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_7_1) {
-        UIWindow *window = [UIApplication sharedApplication].delegate.window;
-        
-        CGFloat boundsWidth = CGRectGetWidth(window.bounds);
-        CGFloat boundsHeight = CGRectGetHeight(window.bounds);
-        
-        if (![self isPortraitOrientation]) {
-            boundsWidth = CGRectGetWidth(window.bounds);
-            boundsHeight = CGRectGetHeight(window.bounds);
-        }
-        
-        return CGSizeMake(boundsWidth, boundsHeight);
-        
+    UIScreen *screen = [UIScreen mainScreen];
+    CGRect fullScreenRect = screen.bounds; // always implicitly in Portrait orientation.
+    CGRect appFrame = screen.applicationFrame;
+    
+    // Find status bar height by checking which dimension of the applicationFrame is narrower than screen bounds.
+    // Little bit ugly looking, but it'll still work even if they change the status bar height in future.
+    float statusBarHeight = MAX((fullScreenRect.size.width - appFrame.size.width), (fullScreenRect.size.height - appFrame.size.height));
+    
+    // Initially assume portrait orientation.
+    float width = fullScreenRect.size.width;
+    float height = fullScreenRect.size.height;
+    
+    // Correct for orientation.
+    //fix in ios8,with and height exchange error
+    if ([[[UIDevice currentDevice]systemVersion] floatValue] < 8.0 && UIInterfaceOrientationIsLandscape(theOrientation)) {
+        width = height;
+        height = fullScreenRect.size.width;
     }
-    else {
-        
-        UIWindow *window = [UIApplication sharedApplication].delegate.window;
-        
-        CGFloat boundsWidth = CGRectGetWidth(window.bounds);
-        CGFloat boundsHeight = CGRectGetHeight(window.bounds);
-        
-        if (![self isPortraitOrientation]) {
-            boundsWidth = CGRectGetHeight(window.bounds);
-            boundsHeight = CGRectGetWidth(window.bounds);
-        }
-        
-        return CGSizeMake(boundsWidth, boundsHeight);
-        
-    }
-
+    
+    CGSize sizeToReturn = CGSizeMake(width, height);
+    
+    return sizeToReturn;
 }
 
 - (BOOL)isPortraitOrientation
