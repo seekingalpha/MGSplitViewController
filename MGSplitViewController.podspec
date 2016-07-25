@@ -3,8 +3,8 @@ Pod::Spec.new do |s|
   s.version  = '1.0.0'
   s.summary  = 'A flexible, advanced split-view controller for iPad developers.'
   s.homepage = 'https://github.com/seekingalpha/MGSplitViewController'
-  s.license  = { :type => 'MIT', :file => 'LICENSE' }
-  s.author   = {'Matt G' => 'me@matt.com'}
+  s.license = 'MIT'
+  s.authors   = {'Matt G' => 'me@matt.com'}
   s.source   = { :git => 'https://github.com/seekingalpha/MGSplitViewController.git', :tag => s.version.to_s }
   s.requires_arc = true
   s.platform = :ios
